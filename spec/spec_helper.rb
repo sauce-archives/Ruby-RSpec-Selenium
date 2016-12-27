@@ -4,7 +4,8 @@ require "sauce_whisk"
 
 RSpec.configure do | config |
   config.before(:each) do | test |
-    build_name = ENV['JENKINS_BUILD_NUMBER'] ||
+    build_name = "Ruby-RSpec-Selenium-#{ENV['TRAVIS_JOB_NUMBER']}" ||
+        ENV['JENKINS_BUILD_NUMBER'] ||
         ENV['SAUCE_BAMBOO_BUILDNUMBER'] ||
         ENV['SAUCE_TC_BUILDNUMBER'] ||
         ENV['SAUCE_BUILD_NAME'] ||
