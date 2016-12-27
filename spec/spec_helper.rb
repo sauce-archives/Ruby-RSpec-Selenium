@@ -19,7 +19,7 @@ RSpec.configure do | config |
   end
 
   config.after(:each) do | example |
-    session_id = @browser.wd.session_id
+    session_id = @driver.session_id
     SauceWhisk::Jobs.change_status(session_id, example.exception.nil?)
   end
 end
