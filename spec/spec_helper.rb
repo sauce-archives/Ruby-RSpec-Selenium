@@ -42,10 +42,10 @@ RSpec.configure do |config|
         # Visual validation point #1
         @eyes.check_window('Main Page')
       end
+    end
 
       session_id = @driver.session_id
       SauceWhisk::Jobs.change_status(session_id, example.exception.nil?)
-    end
   end
 end
 
