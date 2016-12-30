@@ -6,7 +6,7 @@ require "sauce_whisk"
 RSpec.configure do |config|
   config.before(:each) do |test|
     capabilities = {name: test.full_description,
-                    build: ENV['BUILD_TAG'] || "Unknown Build - #{Time.now.to_i}"}
+                    build: ENV['BUILD_TAG'] ||= "Unknown Build - #{Time.now.to_i}"}
 
     capabilities[:version] = ENV['version'] if ENV['version']
     capabilities[:browserName] = ENV['browserName'] if ENV['browserName']

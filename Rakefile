@@ -15,7 +15,6 @@ task :run_rspec do
 end
 
 task :run_cucumber do
-  ENV['BUILD_TAG'] ||= "Unknown Build - #{Time.now.to_i}"
   FileUtils.mkpath(ENV['JUNIT_DIR'])
   begin
     @result = system "parallel_cucumber features -o \"--format junit --out #{ENV['JUNIT_DIR']} --format pretty\" -n 20"
@@ -31,7 +30,7 @@ task :windows_10_edge_14 do
   ENV['version'] = '14.14393'
   ENV['JUNIT_DIR'] = 'junit_reports/windows_10_edge_14'
 
-  Rake::Task[:run_cucumber].execute
+  Rake::Task["run_#{ENV['TEST_RUNNER']}"].execute
 end
 
 task :windows_10_firefox_49 do
@@ -41,7 +40,7 @@ task :windows_10_firefox_49 do
   ENV['version'] = '49.0'
   ENV['JUNIT_DIR'] = 'junit_reports/windows_10_firefox_49'
 
-  Rake::Task[:run_rspec].execute
+  Rake::Task["run_#{ENV['TEST_RUNNER']}"].execute
 end
 
 task :windows_7_ie_11 do
@@ -51,7 +50,7 @@ task :windows_7_ie_11 do
   ENV['version'] = '11.0'
   ENV['JUNIT_DIR'] = 'junit_reports/windows_7_ie_11'
 
-  Rake::Task[:run_rspec].execute
+  Rake::Task["run_#{ENV['TEST_RUNNER']}"].execute
 end
 
 task :os_x_10_11_safari_10 do
@@ -61,7 +60,7 @@ task :os_x_10_11_safari_10 do
   ENV['version'] = '10.0'
   ENV['JUNIT_DIR'] = 'junit_reports/os_x_10_11_safari_10'
 
-  Rake::Task[:run_rspec].execute
+  Rake::Task["run_#{ENV['TEST_RUNNER']}"].execute
 end
 
 task :os_x_10_10_chrome_54 do
@@ -71,7 +70,7 @@ task :os_x_10_10_chrome_54 do
   ENV['version'] = '54.0'
   ENV['JUNIT_DIR'] = 'junit_reports/os_x_10_10_chrome_54'
 
-  Rake::Task[:run_rspec].execute
+  Rake::Task["run_#{ENV['TEST_RUNNER']}"].execute
 end
 
 task :iPad_Air_2_Simulator do
@@ -85,7 +84,7 @@ task :iPad_Air_2_Simulator do
   ENV['browserName'] = ''
   ENV['JUNIT_DIR'] = 'junit_reports/iPad_Air_2_Simulator'
 
-  Rake::Task[:run_rspec].execute
+  Rake::Task["run_#{ENV['TEST_RUNNER']}"].execute
 end
 
 task :iPhone_7_Simulator do
@@ -99,7 +98,7 @@ task :iPhone_7_Simulator do
   ENV['browserName'] = ''
   ENV['JUNIT_DIR'] = 'junit_reports/iPhone_7_Simulator'
 
-  Rake::Task[:run_rspec].execute
+  Rake::Task["run_#{ENV['TEST_RUNNER']}"].execute
 end
 
 task :iPhone_6_Device do
@@ -112,7 +111,7 @@ task :iPhone_6_Device do
   ENV['browserName'] = ''
   ENV['JUNIT_DIR'] = 'junit_reports/iPhone_6_Device'
 
-  Rake::Task[:run_rspec].execute
+  Rake::Task["run_#{ENV['TEST_RUNNER']}"].execute
 end
 
 task :test_android_emulator_5 do
@@ -126,7 +125,7 @@ task :test_android_emulator_5 do
   ENV['browserName'] = ''
   ENV['JUNIT_DIR'] = 'junit_reports/test_android_emulator_5'
 
-  Rake::Task[:run_rspec].execute
+  Rake::Task["run_#{ENV['TEST_RUNNER']}"].execute
 end
 
 task :test_android_s4_4_4 do
@@ -140,7 +139,7 @@ task :test_android_s4_4_4 do
   ENV['browserName'] = ''
   ENV['JUNIT_DIR'] = 'junit_reports/test_android_s4_4_4'
 
-  Rake::Task[:run_rspec].execute
+  Rake::Task["run_#{ENV['TEST_RUNNER']}"].execute
 end
 
 task :test_android_device_s6 do
@@ -155,7 +154,7 @@ task :test_android_device_s6 do
   ENV['browserName'] = ''
   ENV['JUNIT_DIR'] = 'junit_reports/test_android_device_s6'
 
-  Rake::Task[:run_rspec].execute
+  Rake::Task["run_#{ENV['TEST_RUNNER']}"].execute
 end
 
 multitask :test_desktop => [
@@ -186,16 +185,26 @@ multitask :test_android => [
   raise StandardError, "Tests failed!" unless @success
 end
 
+task :test_rspec do
+  ENV['TEST_RUNNER'] = 'rspec'
+  Rake::MultiTask[:test_all].invoke { raise StandardError, "Tests failed!" unless @success }
+end
+
+task :test_cucumber do
+  ENV['TEST_RUNNER'] = 'cucumber'
+  Rake::MultiTask[:test_all].invoke { raise StandardError, "Tests failed!" unless @success }
+end
+
 multitask :test_all => [
     :windows_10_edge_14,
     :windows_10_firefox_49,
     :windows_7_ie_11,
     :os_x_10_11_safari_10,
     :os_x_10_10_chrome_54,
-    :iPad_Air_2_Simulator,
-    :iPhone_7_Simulator,
-    :test_android_emulator_5,
-    :test_android_s4_4_4
+    # :iPad_Air_2_Simulator,
+    # :iPhone_7_Simulator,
+    # :test_android_emulator_5,
+    # :test_android_s4_4_4
 ] do
   raise StandardError, "Tests failed!" unless @success
 end

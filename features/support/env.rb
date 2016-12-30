@@ -5,7 +5,7 @@ require 'sauce_whisk'
 Before do | scenario |
   @name = "#{scenario.feature.name} - #{scenario.name}"
   capabilities = {name: @name,
-                  build: ENV['BUILD_TAG']}
+                  build: ENV['BUILD_TAG'] ||= "Unknown Build - #{Time.now.to_i}"}
 
   capabilities[:version] = ENV['version'] if ENV['version']
   capabilities[:browserName] = ENV['browserName'] if ENV['browserName']
