@@ -2,16 +2,10 @@ require 'rspec/core/rake_task'
 
 task default: :test_all
 
-# %w[desktop android ios].each do |type|
-#   RSpec::Core::RakeTask.new(type) do |spec|
-#     puts type
-#     spec.pattern = "spec/#{type}/*_spec.rb"
-#   end
-# end
-
 task :parallel_run do
   begin
     @success = true if @success.nil?
+    FileUtils.mkpath(ENV['JUNIT_DIR'])
     @result = system "parallel_split_test spec/#{ENV['SPEC_TYPE']}"
   ensure
     @success &= @result
@@ -77,6 +71,7 @@ task :iPad_Air_2_Simulator do
   ENV['platformName'] = 'ios'
   ENV['deviceOrientation'] = 'portrait'
   ENV['browserName'] = ''
+  ENV['JUNIT_DIR'] = 'junit_reports/iPad_Air_2_Simulator'
 
   Rake::Task[:parallel_run].execute
 end
@@ -90,6 +85,7 @@ task :iPhone_7_Simulator do
   ENV['platformName'] = 'ios'
   ENV['deviceOrientation'] = 'portrait'
   ENV['browserName'] = ''
+  ENV['JUNIT_DIR'] = 'junit_reports/iPhone_7_Simulator'
 
   Rake::Task[:parallel_run].execute
 end
@@ -102,6 +98,7 @@ task :iPhone_6_Device do
   ENV['platformName'] = 'ios'
   ENV['deviceOrientation'] = 'portrait'
   ENV['browserName'] = ''
+  ENV['JUNIT_DIR'] = 'junit_reports/iPhone_6_Device'
 
   Rake::Task[:parallel_run].execute
 end
@@ -115,6 +112,7 @@ task :test_android_emulator_5 do
   ENV['deviceName'] = 'Android Emulator'
   ENV['platformVersion'] = '5.1'
   ENV['browserName'] = ''
+  ENV['JUNIT_DIR'] = 'junit_reports/test_android_emulator_5'
 
   Rake::Task[:parallel_run].execute
 end
@@ -128,6 +126,7 @@ task :test_android_s4_4_4 do
   ENV['deviceName'] = 'Samsung Galaxy S4 Emulator'
   ENV['platformVersion'] = '4.4'
   ENV['browserName'] = ''
+  ENV['JUNIT_DIR'] = 'junit_reports/test_android_s4_4_4'
 
   Rake::Task[:parallel_run].execute
 end
@@ -142,6 +141,7 @@ task :test_android_device_s6 do
   ENV['deviceName'] = 'Samsung Galaxy'
   ENV['platformVersion'] = '6.0'
   ENV['browserName'] = ''
+  ENV['JUNIT_DIR'] = 'junit_reports/test_android_device_s6'
 
   Rake::Task[:parallel_run].execute
 end
