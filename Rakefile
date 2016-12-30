@@ -6,7 +6,7 @@ require 'parallel_cucumber'
 # Cucumber and RSpec can not be run at the same time
 # The default task uses the runner based on the setting of ENV['TEST_RUNNER']
 task :default do
-  ENV['BUILD_TAG'] += "-#{ENV['TEST_RUNNER']}"
+  ENV['BUILD_TAG'] += "-#{ENV['TEST_RUNNER']}" if ENV['BUILD_TAG']
   Rake::MultiTask[:test_all].invoke
 end
 
@@ -44,10 +44,10 @@ multitask :test_all => [
     :windows_7_ie_11,
     :os_x_10_11_safari_10,
     :os_x_10_10_chrome_54,
-# :iPad_Air_2_Simulator,
-# :iPhone_7_Simulator,
-# :test_android_emulator_5,
-# :test_android_s4_4_4
+    :iPad_Air_2_Simulator,
+    :iPhone_7_Simulator,
+    :test_android_emulator_5,
+    :test_android_s4_4_4
 ] do
   raise StandardError, "Tests failed!" unless @success
 end

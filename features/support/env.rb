@@ -1,6 +1,7 @@
 begin require 'rspec/expectations'; rescue LoadError; require 'spec/expectations'; end
 require 'selenium-webdriver'
 require 'sauce_whisk'
+require 'appium_lib'
 
 Before do | scenario |
   @name = "#{scenario.feature.name} - #{scenario.name}"
@@ -20,6 +21,7 @@ Before do | scenario |
   @mobile = capabilities.key? :app
 
   if @mobile
+    @platform = capabilities[:platformName]
     @driver = Appium::Driver.new(caps: capabilities)
     @driver.start_driver
   else
