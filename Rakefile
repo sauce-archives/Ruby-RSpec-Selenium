@@ -1,7 +1,23 @@
 require 'rspec/core/rake_task'
 require 'parallel_cucumber'
 
-task default: :test_all
+# Cucumber and RSpec can not be run at the same time
+# The default task uses the runner based on the setting of ENV['TEST_RUNNER']
+task :default do
+  ENV['BUILD_TAG'] += ENV['TEST_RUNNER']
+  Rake::MultiTask[:test_all].invoke { raise StandardError, "Tests failed!" unless @success }
+end
+
+task :test_rspec do
+  ENV['TEST_RUNNER'] = 'rspec'
+  Rake::MultiTask[:test_all].invoke { raise StandardError, "Tests failed!" unless @success }
+end
+
+task :test_cucumber do
+  ENV['TEST_RUNNER'] = 'cucumber'
+  Rake::MultiTask[:test_all].invoke { raise StandardError, "Tests failed!" unless @success }
+end
+
 
 @success = true if @success.nil?
 
@@ -183,16 +199,6 @@ multitask :test_android => [
     :test_android_s4_4_4
 ] do
   raise StandardError, "Tests failed!" unless @success
-end
-
-task :test_rspec do
-  ENV['TEST_RUNNER'] = 'rspec'
-  Rake::MultiTask[:test_all].invoke { raise StandardError, "Tests failed!" unless @success }
-end
-
-task :test_cucumber do
-  ENV['TEST_RUNNER'] = 'cucumber'
-  Rake::MultiTask[:test_all].invoke { raise StandardError, "Tests failed!" unless @success }
 end
 
 multitask :test_all => [
