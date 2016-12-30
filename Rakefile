@@ -1,25 +1,24 @@
 require 'rspec/core/rake_task'
 require 'parallel_cucumber'
 
+@success = true
+
 # Cucumber and RSpec can not be run at the same time
 # The default task uses the runner based on the setting of ENV['TEST_RUNNER']
 task :default do
-  ENV['BUILD_TAG'] += ENV['TEST_RUNNER']
-  Rake::MultiTask[:test_all].invoke { raise StandardError, "Tests failed!" unless @success }
+  ENV['BUILD_TAG'] += "-#{ENV['TEST_RUNNER']}"
+  Rake::MultiTask[:test_all].invoke
 end
 
 task :test_rspec do
   ENV['TEST_RUNNER'] = 'rspec'
-  Rake::MultiTask[:test_all].invoke { raise StandardError, "Tests failed!" unless @success }
+  Rake::MultiTask[:test_all].invoke
 end
 
 task :test_cucumber do
   ENV['TEST_RUNNER'] = 'cucumber'
-  Rake::MultiTask[:test_all].invoke { raise StandardError, "Tests failed!" unless @success }
+  Rake::MultiTask[:test_all].invoke
 end
-
-
-@success = true if @success.nil?
 
 task :run_rspec do
   FileUtils.mkpath(ENV['JUNIT_DIR'][/^[^\/]+/])
@@ -37,6 +36,20 @@ task :run_cucumber do
   ensure
     @success &= @result
   end
+end
+
+multitask :test_all => [
+    :windows_10_edge_14,
+    :windows_10_firefox_49,
+    :windows_7_ie_11,
+    :os_x_10_11_safari_10,
+    :os_x_10_10_chrome_54,
+# :iPad_Air_2_Simulator,
+# :iPhone_7_Simulator,
+# :test_android_emulator_5,
+# :test_android_s4_4_4
+] do
+  raise StandardError, "Tests failed!" unless @success
 end
 
 task :windows_10_edge_14 do
@@ -197,20 +210,6 @@ multitask :test_android => [
     # Real Device Not Implemented
     #:test_android_device_s6,
     :test_android_s4_4_4
-] do
-  raise StandardError, "Tests failed!" unless @success
-end
-
-multitask :test_all => [
-    :windows_10_edge_14,
-    :windows_10_firefox_49,
-    :windows_7_ie_11,
-    :os_x_10_11_safari_10,
-    :os_x_10_10_chrome_54,
-    # :iPad_Air_2_Simulator,
-    # :iPhone_7_Simulator,
-    # :test_android_emulator_5,
-    # :test_android_s4_4_4
 ] do
   raise StandardError, "Tests failed!" unless @success
 end
