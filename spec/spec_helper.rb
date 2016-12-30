@@ -18,7 +18,9 @@ RSpec.configure do |config|
     capabilities[:app] = ENV['app'] if ENV['app']
     capabilities[:appiumVersion] = ENV['appiumVersion'] if ENV['appiumVersion']
 
-    if capabilities.key? :app
+    @mobile = capabilities.key? :app
+
+    if @mobile
       @driver = Appium::Driver.new(caps: capabilities)
       @driver.start_driver
     else
@@ -44,8 +46,8 @@ RSpec.configure do |config|
       end
     end
 
-      session_id = @driver.session_id
-      SauceWhisk::Jobs.change_status(session_id, example.exception.nil?)
+    session_id = @driver.session_id
+    SauceWhisk::Jobs.change_status(session_id, example.exception.nil?)
   end
 end
 

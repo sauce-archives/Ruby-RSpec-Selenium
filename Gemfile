@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rspec'
+gem 'cucumber', '>=2.0.0'
 gem 'selenium-webdriver', '~> 2.53'
 gem 'require_all'
 gem 'parallel_split_test'
@@ -9,3 +10,4 @@ gem 'rake'
 gem 'json', '~> 1.0'
 gem 'appium_lib', '~> 2.0'
 gem 'eyes_selenium'
+gem 'parallel_cucumber'
