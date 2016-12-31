@@ -1,9 +1,9 @@
-begin require 'rspec/expectations'; rescue LoadError; require 'spec/expectations'; end
+require 'rspec'
 require 'selenium-webdriver'
 require 'sauce_whisk'
 require 'appium_lib'
 
-Before do | scenario |
+Before do |scenario|
   @name = "#{scenario.feature.name} - #{scenario.name}"
   capabilities = {name: @name,
                   build: ENV['BUILD_TAG'] ||= "Unknown Build - #{Time.now.to_i}"}
@@ -37,7 +37,7 @@ Before do | scenario |
   end
 end
 
-After do | scenario |
+After do |scenario|
   if @eyes
     @eyes.test(app_name: 'Applitools',
                test_name: @name,

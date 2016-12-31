@@ -36,11 +36,12 @@ RSpec.configure do |config|
     end
   end
 
-
   config.after(:each) do |example|
     if @eyes
-      @eyes.test(app_name: 'Applitools', test_name: test,
-                 viewport_size: {width: 1008, height: 615}, driver: @driver) do
+      @eyes.test(app_name: 'Applitools',
+                 test_name: test,
+                 viewport_size: {width: 1008, height: 615},
+                 driver: @driver) do
         # Visual validation point #1
         @eyes.check_window('Main Page')
       end
