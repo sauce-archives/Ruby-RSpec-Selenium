@@ -2,11 +2,13 @@ require "spec_helper"
 
 describe "Guinea Pig Comments" do
   it "Verify comments text" do
-    page = GuineaPigPage.visit
-    comment = CommentModel.new
+    page = GuineaPigPage.new
+    page.load
 
-    page.submit_comment(comment)
+    comment_input = "This is a comment"
 
-    expect(page.comment).to eq comment.comment_input
+    page.submit_comment(comment_input)
+
+    expect(page.comment).to eq comment_input
   end
 end
