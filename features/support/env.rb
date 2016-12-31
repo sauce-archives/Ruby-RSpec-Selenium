@@ -1,9 +1,17 @@
-begin require 'rspec/expectations'; rescue LoadError; require 'spec/expectations'; end
-require 'selenium-webdriver'
+require 'rspec'
+require 'watir'
 require 'sauce_whisk'
-require 'appium_lib'
+require 'page-object'
 
-Before do | scenario |
+require 'data_magic'
+DataMagic.load 'data_magic.yml'
+
+require 'page-object/page_factory'
+World(PageObject::PageFactory)
+
+require_relative '../support/pages/guinea_pig_page'
+
+Before do |scenario|
   @name = "#{scenario.feature.name} - #{scenario.name}"
   capabilities = {name: @name,
                   build: ENV['BUILD_TAG'] ||= "Unknown Build - #{Time.now.to_i}"}
@@ -11,24 +19,10 @@ Before do | scenario |
   capabilities[:version] = ENV['version'] if ENV['version']
   capabilities[:browserName] = ENV['browserName'] if ENV['browserName']
   capabilities[:platform] = ENV['platform'] if ENV['platform']
-  capabilities[:deviceType] = ENV['deviceType'] if ENV['deviceType']
-  capabilities[:platformVersion] = ENV['platformVersion'] if ENV['platformVersion']
-  capabilities[:deviceName] = ENV['deviceName'] if ENV['deviceName']
-  capabilities[:platformName] = ENV['platformName'] if ENV['platformName']
-  capabilities[:app] = ENV['app'] if ENV['app']
-  capabilities[:appiumVersion] = ENV['appiumVersion'] if ENV['appiumVersion']
+  url = "https://#{ENV['SAUCE_USERNAME']}:#{ENV['SAUCE_ACCESS_KEY']}@ondemand.saucelabs.com:443/wd/hub".strip
 
-  @mobile = capabilities.key? :app
-
-  if @mobile
-    @platform = capabilities[:platformName]
-    @driver = Appium::Driver.new(caps: capabilities)
-    @driver.start_driver
-  else
-    url = "https://#{ENV['SAUCE_USERNAME']}:#{ENV['SAUCE_ACCESS_KEY']}@ondemand.saucelabs.com:443/wd/hub".strip
-    @driver = Selenium::WebDriver.for :remote, {url: url,
-                                                desired_capabilities: capabilities}
-  end
+  @browser = Watir::Browser.new :remote, {url: url,
+                                          desired_capabilities: capabilities}
 
   if ENV['APPLITOOLS_ACCESS_KEY']
     require 'eyes_selenium'
@@ -37,17 +31,17 @@ Before do | scenario |
   end
 end
 
-After do | scenario |
+After do |scenario|
   if @eyes
     @eyes.test(app_name: 'Applitools',
                test_name: @name,
                viewport_size: {width: 1008, height: 615},
-               driver: @driver) do
+               driver: @browser.wd) do
       # Visual validation point #1
       @eyes.check_window('Main Page')
     end
   end
 
-  session_id = @driver.session_id
+  session_id = @browser.wd.session_id
   SauceWhisk::Jobs.change_status(session_id, scenario.passed?)
 end
