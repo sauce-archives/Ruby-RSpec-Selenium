@@ -1,8 +1,19 @@
 require_relative "../util/spec_helper"
 
-describe "Google Search" do
-  it "search text on google" do
-  	@base_url = "https://www.google.co.in/"
-    @browser.get(@base_url + "/")
+describe "Search" do
+  it "test search 1" do
+    raise "fail test" if rand(3).equal?(2)
+  end
+
+  it "test search 2" do
+    raise "fail test" if rand(3).equal?(2)
+  end
+
+  it "test search 3" do
+    raise "fail test" if rand(3).equal?(2)
+  end
+
+  it "test search 4" do
+    raise "fail test" if rand(3).equal?(2)
   end
 end

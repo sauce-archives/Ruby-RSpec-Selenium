@@ -1,5 +1,5 @@
 def run_tests(platform, browser, version, junit_dir)
-  system("platform=\"#{platform}\" browserName=\"#{browser}\" version=\"#{version}\" JUNIT_DIR=\"#{junit_dir}\" parallel_split_test spec")
+  system("PARALLEL_SPLIT_TEST_PROCESSES=10 platform=\"#{platform}\" browserName=\"#{browser}\" version=\"#{version}\" JUNIT_DIR=\"#{junit_dir}\" parallel_split_test spec")
 end
 
 task :windows_8_1_chrome_43 do
