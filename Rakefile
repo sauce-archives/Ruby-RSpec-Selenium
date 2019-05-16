@@ -5,7 +5,7 @@ require 'rspec/core/rake_task'
 #
 # For use in building a unique Build Name for Sauce Labs
 #
-ENV['SAUCE_START_TIME'] = "Ruby-RSpec-Selenium: Local-#{Time.now.to_i}"
+ENV['BUILD_NAME'] = "Ruby-RSpec-Selenium: Local-#{Time.now.to_i}"
 
 #
 # Uses parallel-split-test gem to set the number of tests that get run in parallel
