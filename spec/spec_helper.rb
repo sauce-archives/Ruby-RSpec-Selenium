@@ -14,11 +14,13 @@ RSpec.configure do |config|
   end
 
   def create_session(test_name)
-    platform[:name] = test_name
-    sauce_options = SimpleSauce::Options.new(platform)
+    opts = platform.merge(name: test_name,
+                          screen_resolution: '1080x720',
+                          command_timeout: 90)
+    sauce_options = SimpleSauce::Options.new(opts)
 
     @session = SimpleSauce::Session.new(sauce_options)
-    @session.data_center = (ENV['SAUCE_DC'] || 'US_WEST').to_sym
+    @session.data_center = ENV['SAUCE_DATA_CENTER'].to_sym if ENV['SAUCE_DATA_CENTER']
     @driver = @session.start
   end
 
@@ -52,6 +54,7 @@ RSpec.configure do |config|
        browser_name: 'firefox',
        browser_version: '60.0'}
     when 'headless'
+      ENV['SAUCE_DATA_CENTER'] = 'US_EAST'
       {platform_name: 'Linux',
        browser_name: 'chrome'}
     end
