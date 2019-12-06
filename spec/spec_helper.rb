@@ -1,21 +1,10 @@
 # frozen_string_literal: true
 
-require 'selenium-webdriver'
 require 'simple_sauce'
-
 
 RSpec.configure do |config|
   config.before do |example|
-    create_session(example.full_description)
-  end
-
-  config.after do |example|
-    end_session(!example.exception)
-  end
-
-  def create_session(test_name)
-    opts = platform.merge(name: test_name,
-                          screen_resolution: '1080x720',
+    opts = platform.merge(name: example.full_description,
                           command_timeout: 90)
     sauce_options = SimpleSauce::Options.new(opts)
 
@@ -24,8 +13,8 @@ RSpec.configure do |config|
     @driver = @session.start
   end
 
-  def end_session(result)
-    @session.stop(result)
+  config.after do |example|
+    @session.stop(!example.exception)
   end
 
   # Ideal implementation is to do a lookup from a YAML file or the like rather than using a switch implementation
@@ -35,12 +24,12 @@ RSpec.configure do |config|
     case ENV['PLATFORM']
     when 'windows_10_edge'
       {platform_name: 'Windows 10',
-       browser_name: 'edge',
+       browser_name: 'MicrosoftEdge',
        browser_version: '18.17763'}
     when 'windows_8_ie'
-      {platform: 'Windows 8.1',
-       browser_name: 'ie',
-       version: '11.0'}
+      {platform_name: 'Windows 8.1',
+       browser_name: 'internet explorer',
+       browser_version: '11.0'}
     when 'mac_sierra_chrome'
       {platform_name: 'macOS 10.12',
        browser_name: 'chrome',
